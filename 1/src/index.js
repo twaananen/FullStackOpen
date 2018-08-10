@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 const Button = ({handleClick,text}) => <button onClick={handleClick}>{text}</button>
 
-const Statistic = ({value,text}) => <div>{text}{value}</div>
+const Statistic = ({value,text}) => <tr><td>{text}</td><td>{value}</td></tr>
 
 const Statistics = ({state}) => {
 
@@ -19,11 +19,13 @@ const Statistics = ({state}) => {
         return(
             <div>
             <p><strong>statistiikka</strong></p>
-            hyvä {state.hyvä}<br></br>
-            neutraali {state.neutraali}<br></br>
-            huono {state.huono}<br></br>
-            <Statistic value={average()} text="keskiarvo ">keskiarvo</Statistic>
-            <Statistic value={percentageOfPositive()} text="positiivisia ">positiivisia</Statistic>
+            <table>
+            <tr><td>hyvä</td> <td>{state.hyvä}</td></tr>
+            <tr><td>neutraali</td> <td>{state.neutraali}</td></tr>
+            <tr><td>huono</td> <td>{state.huono}</td></tr>
+            <Statistic value={average()} text="keskiarvo">keskiarvo</Statistic>
+            <Statistic value={percentageOfPositive()} text="positiivisia">positiivisia</Statistic>
+            </table>
             </div>
         )}
     else{
