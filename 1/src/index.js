@@ -9,24 +9,32 @@ const Button = ({handleClick,text}) =>(
 
 const Statistics = ({state}) => {
 
-  const average = (state) => {
+  const average = () => {
     return ((state.hyvä-state.huono)/(state.hyvä+state.huono+state.neutraali)).toFixed(2)
   }
 
-  const percentageOfPositive = (state) => {
+  const percentageOfPositive = () => {
     return ((state.hyvä*100)/(state.hyvä+state.huono+state.neutraali)).toFixed(1) + "%"
   }
-
-  return(
-    <div>
-      <p><strong>statistiikka</strong></p>
-      hyvä {state.hyvä}<br></br>
-      neutraali {state.neutraali}<br></br>
-      huono {state.huono}<br></br>
-      <Statistic value={average(state)} text="keskiarvo ">keskiarvo</Statistic>
-      <Statistic value={percentageOfPositive(state)} text="positiivisia ">positiivisia</Statistic>
-    </div>
-  )
+  
+  if (state.hyvä+state.huono+state.neutraali != 0){
+     return(
+      <div>
+        <p><strong>statistiikka</strong></p>
+        hyvä {state.hyvä}<br></br>
+        neutraali {state.neutraali}<br></br>
+        huono {state.huono}<br></br>
+        <Statistic value={average()} text="keskiarvo ">keskiarvo</Statistic>
+        <Statistic value={percentageOfPositive()} text="positiivisia ">positiivisia</Statistic>
+      </div>
+    )}
+    else{
+      return(
+      <div>
+        <p><strong>statistiikka</strong></p>
+        ei yhtään palautetta annettu
+      </div>
+      )}
 }
 
 const Statistic = ({value,text}) => (
