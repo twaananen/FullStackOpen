@@ -20,13 +20,22 @@ class App extends React.Component {
       this.setState({votes})
       }
 
+      mostVotes = () =>{
+            return this.state.votes.indexOf(Math.max(...this.state.votes))
+      }
+      hasVotes = ({number}) => <div>has {this.state.votes[number]} votes</div>
+      showAnecdote = ({number}) => <div>{anecdotes[number]}</div>
+
   render() {
     return (
       <div>
-        {this.props.anecdotes[this.state.selected]}<br></br>
-        has {this.state.votes[this.state.selected]} votes<br></br>
+        {this.showAnecdote({number: this.state.selected})}
+        {this.hasVotes({number :this.state.selected})}
         <Button handleClick={this.clickVote()} text="vote"></Button>
         <Button handleClick={this.clickNext()} text="next anecdote"></Button>
+        <p><strong>anecdote with most votes:</strong></p>
+        {this.showAnecdote({number: this.mostVotes()})}
+        {this.hasVotes({number :this.mostVotes()})}
       </div>
     )
   }
