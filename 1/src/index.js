@@ -22,7 +22,9 @@ class App extends React.Component{
       <p><strong>statistiikka</strong></p>
       hyvä {this.state.hyvä}<br></br>
       neutraali {this.state.neutraali}<br></br>
-      huono {this.state.huono}
+      huono {this.state.huono}<br></br>
+      keskiarvo {((this.state.hyvä- this.state.huono)/(this.state.hyvä+this.state.huono+this.state.neutraali)).toPrecision(2)}<br></br>
+      positiivisia {(this.state.hyvä/(this.state.hyvä+this.state.huono+this.state.neutraali)*100).toPrecision(3)}%<br></br>
       </div>
   }
 }
