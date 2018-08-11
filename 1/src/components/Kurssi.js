@@ -1,7 +1,37 @@
 import React from "react";
-import Otsikko from "./Otsikko";
-import Sisalto from "./Sisalto";
-import Yhteensa from "./Yhteensa";
+
+
+const Otsikko = ({nimi}) => {
+    return (
+      <div>
+        <h1>{nimi} </h1>
+      </div>
+    )
+  }
+
+  const Sisalto = ({osat}) => {
+    return (
+      <div>
+          {osat.map(osa => <Osa nimi={osa.nimi} tehtavia={osa.tehtavia} /> )}
+      </div>
+    )
+  }
+
+  const Yhteensa = ({osat}) => {
+    return (
+      <div>
+        <p>yhteensä {osat.reduce((summa,osa) =>  summa+osa.tehtavia,0)} tehtävää </p>
+      </div>
+    )
+  }
+
+  const Osa = ({nimi,tehtavia}) => {
+    return (
+      <div>
+        <p>{nimi} {tehtavia}</p>
+      </div>
+    )
+  }
 
 const Kurssi = ({kurssi}) => {
     return(

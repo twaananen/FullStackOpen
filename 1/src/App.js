@@ -3,11 +3,11 @@ import Kurssi from "./components/Kurssi";
 
 
 
-const App = ({kurssi}) => {
+const App = ({kurssit}) => {
 
   return (
     <div>
-      <Kurssi kurssi={kurssi}></Kurssi>
+      {kurssit.map(kurssi => <Kurssi kurssi={kurssi}></Kurssi>)}
     </div>
   )
 }
