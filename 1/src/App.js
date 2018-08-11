@@ -1,5 +1,29 @@
 import React from 'react';
 
+
+const PersonToTable = ({persons,filter}) => persons.map(person =>{
+    if(filter.length==0 
+      || person.name.toLowerCase().startsWith(filter.toLowerCase()))
+    return(
+    <tr key={person.name}>
+      <td>{person.name}</td>
+      <td>{person.number}</td>
+    </tr>
+  )})
+  
+const AddPersonForm = ({state, addPerson,handleNameInputChange,handleNumberInputChange}) => 
+      <form onSubmit={addPerson}>
+        <div>
+          <h3>Lisää Uusi!</h3>
+            nimi: <input value={state.newName} onChange={handleNameInputChange}/>
+          </div><div>
+            numero: <input value={state.newNumber} onChange={handleNumberInputChange}/>
+          </div>
+          <div>
+            <button type="submit">lisää</button>
+          </div>
+        </form>
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -41,7 +65,6 @@ class App extends React.Component {
       newName: "",
       newNumber:""
     })
-
   }
 
   render() {
@@ -51,27 +74,13 @@ class App extends React.Component {
         <div>
         rajaa näytettäviä <input value={this.state.filter} onChange={this.handleFilterInputChange}/>
         </div>
-        <form onSubmit={this.addPerson}>
-        <div>
-          <h3>Lisää Uusi!</h3>
-            nimi: <input value={this.state.newName} onChange={this.handleNameInputChange}/>
-          </div><div>
-            numero: <input value={this.state.newNumber} onChange={this.handleNumberInputChange}/>
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
+        <AddPersonForm state={this.state}
+        addPerson={this.addPerson}
+        handleNameInputChange={this.handleNameInputChange}
+        handleNumberInputChange={this.handleNumberInputChange}/>
         <h2>Numerot</h2>
         <table><tbody>
-        {this.state.persons.map(person =>{
-          if(this.state.filter.length==0 || person.name.toLowerCase().startsWith(this.state.filter.toLowerCase()))
-          return(
-          <tr key={person.name}>
-            <td>{person.name}</td>
-            <td>{person.number}</td>
-          </tr>
-        )})}
+        <PersonToTable persons={this.state.persons} filter={this.state.filter}/>
         </tbody></table>
       </div>
     )
