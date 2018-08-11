@@ -16,6 +16,10 @@ const kurssi = {
     {
       nimi: 'Komponenttien tila',
       tehtavia: 14
+    },
+    {
+      nimi: 'Redux',
+      tehtavia: 7
     }
   ]
 }
