@@ -21,10 +21,14 @@ class App extends React.Component {
       name: this.state.newName
     }
     const persons = this.state.persons.concat(newPerson)
+    //lisäyksen esto eli poisto kopiosta
+    this.state.persons.forEach(person => person.name === newPerson.name ?
+       persons.pop():0)
     this.setState({
       persons,
       newName: ""
     })
+
   }
 
   render() {
