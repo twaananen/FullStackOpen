@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 
 
-const ShowFilteredCountries = ({countries,filter}) => {
+const ShowFilteredCountries = ({countries,filter,setFilter}) => {
 	if (countries.length ===0)
 	return null
 	
@@ -20,7 +20,7 @@ const ShowFilteredCountries = ({countries,filter}) => {
 		return (
 			<div>
 			{filteredCountries.map(country => {
-				return(<div key={country.numericCode}>
+				return(<div key={country.numericCode} onClick={setFilter(country.name)}>
 					{country.name}
 					</div>
 				)
@@ -67,6 +67,9 @@ class App extends React.Component {
 	handleFilterInputChange = (event) => {
 		this.setState({filter: event.target.value})
 	}
+
+	setFilter = (newFilter) =>() => this.setState({filter: newFilter})
+
 	render() {
 		return (
 			<div>
@@ -74,7 +77,7 @@ class App extends React.Component {
 			<div>
 			find countries <input value={this.state.filter} onChange={this.handleFilterInputChange}/>
 			</div>
-			<ShowFilteredCountries countries={this.state.countries} filter={this.state.filter}/>
+			<ShowFilteredCountries countries={this.state.countries} filter={this.state.filter} setFilter={this.setFilter}/>
 			</div>
 		)
 	}
