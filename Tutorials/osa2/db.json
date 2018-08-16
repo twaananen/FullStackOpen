@@ -21,13 +21,13 @@
     {
       "content": "uusi muistiinpano..",
       "date": "2018-08-12T14:07:46.162Z",
-      "important": false,
+      "important": true,
       "id": 4
     },
     {
       "content": "uusi muistiinpano..",
       "date": "2018-08-12T14:09:36.943Z",
-      "important": true,
+      "important": false,
       "id": 5
     },
     {
@@ -35,6 +35,12 @@
       "date": "2018-08-12T14:12:42.512Z",
       "important": true,
       "id": 6
+    },
+    {
+      "content": "16.08.2018 18.38",
+      "date": "2018-08-16T15:38:29.049Z",
+      "important": true,
+      "id": 7
     }
   ]
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import Note from './components/Note'
 import axios from "axios";
+import noteService from "./services/notes"
 
 class App extends React.Component {
   constructor(props) {
@@ -15,11 +16,10 @@ class App extends React.Component {
   
   componentDidMount(){
     console.log("did mount");
-    axios
-    .get('http://localhost:3001/notes')
-    .then(response => {
-      console.log("promise fulfilled");
-      this.setState({notes: response.data})
+    noteService
+    .getAll()
+    .then(notes => {
+      this.setState({notes})
     })
   }
   
@@ -31,11 +31,11 @@ class App extends React.Component {
       important: Math.random() > 0.5
     }
     
-    axios
-    .post('http://localhost:3001/notes', noteObject)
-    .then(response => {
+    noteService
+    .create(noteObject)
+    .then(newNote => {
       this.setState({
-        notes: this.state.notes.concat(response.data),
+        notes: this.state.notes.concat(newNote),
         newNote: ''
       })
     })
@@ -52,16 +52,20 @@ class App extends React.Component {
   
   toggleImportanceOf = (id) => {
     return () => {
-      const url = `http://localhost:3001/notes/${id}`
       const note = this.state.notes.find(n => n.id === id)
       const changedNote = { ...note, important: !note.important }
   
-      axios
-        .put(url, changedNote)
-        .then(response => {
+      noteService
+        .update(id, changedNote)
+        .then(changedNote => {
+          const notes = this.state.notes.filter(n => n.id !== id)
           this.setState({
-            notes: this.state.notes.map(note => note.id !== id ? note : response.data)
+            notes: notes.concat(changedNote)
           })
+        })
+        .catch(error => {
+          alert(`muistiinpano '${note.content}' on jo valitettavasti poistettu palvelimelta`)
+          this.setState({ notes: this.state.notes.filter(n => n.id !== id) })
         })
     }
   }
