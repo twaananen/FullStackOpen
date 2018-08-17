@@ -1,86 +1,123 @@
 import React from 'react';
-import axios from "axios";
+import phonebook from './services/phonebook';
 
 
-const ShowFilteredCountries = ({countries,filter,setFilter}) => {
-	if (countries.length ===0)
-	return null
+const PersonToTable = ({persons,filter,removePerson}) => persons.map(person =>{
+	if(filter.length===0 
+		|| person.name.toLowerCase().startsWith(filter.toLowerCase()))
+		return(
+			<tr key={person.id}>
+			<td>{person.name}</td>
+			<td>{person.number}</td>
+			<td><button onClick={removePerson(person.id)}>poista</button></td>
+			</tr>
+		)
+	})
 	
-	const filteredCountries = countries.filter((country) =>
-	filter.length===0 || country.name.toLowerCase().startsWith(filter.toLowerCase()))
-	console.log('countries after filter',filteredCountries.length);
+	const AddPersonForm = ({state, addPerson,handleNameInputChange,handleNumberInputChange}) => 
+	<form onSubmit={addPerson}>
+	<div>
+	<h3>Lisää Uusi!</h3>
+	nimi: <input value={state.newName} onChange={handleNameInputChange}/>
+	</div><div>
+	numero: <input value={state.newNumber} onChange={handleNumberInputChange}/>
+	</div>
+	<div>
+	<button type="submit">lisää</button>
+	</div>
+	</form>
 	
-	if (filteredCountries.length > 10)
-	return (
-		<div>
-		too many matches, specify a longer filter
-		</div>
-	)
-	else if(filteredCountries.length > 1){
-		return (
-			<div>
-			{filteredCountries.map(country => {
-				return(<div key={country.numericCode} onClick={setFilter(country.name)}>
-					{country.name}
-					</div>
-				)
+	class App extends React.Component {
+		constructor(props) {
+			super(props)
+			this.state = {
+				persons: [],
+				newName: '',
+				newNumber: '',
+				filter: ''
+			}
+		}
+		
+		componentDidMount(){
+			phonebook.getAll()
+			.then((persons) =>{
+				this.setState({persons})
 			})
 		}
-		</div>
-	)}
-	else if(filteredCountries.length === 1){
-		return (
-			<div>
-			<h1>{filteredCountries[0].name}</h1>
-			<p>capital: {filteredCountries[0].capital}</p>
-			<p>population: {filteredCountries[0].population}</p>
-			<img src={filteredCountries[0].flag} alt="flag" height="200" width="300"/>
-			</div>
-		)
-	}
-	else
-	return (
-		<div>
-		No countries with this filter
-		</div>
-	)
-}
+		
+		handleNameInputChange = (event) => {
+			this.setState({newName: event.target.value})
+		}
+		handleNumberInputChange = (event) => {
+			this.setState({newNumber: event.target.value})
+		}
+		handleFilterInputChange = (event) => {
+			this.setState({filter: event.target.value})
+		}
+		
+		addPerson = (event) => {
+			event.preventDefault()
+			const newPerson = {
+				name: this.state.newName,
+				number: this.state.newNumber
+			}
+			if(this.state.persons.find(person => person.name === newPerson.name)){
+				if(!window.confirm(`${newPerson.name} on jo luettelossa, korvataanko vanha numero uudella?`))
+				return
+				const id =this.state.persons.find(person => person.name === newPerson.name).id
+				phonebook
+				.update(id,newPerson)
+				.then(updatedPerson => {
+					this.setState({
+						persons: this.state.persons.map(person => person.id === id ? updatedPerson : person),
+						newName: "",
+						newNumber:""
+					})
+				})
+			}
+			else {
+				phonebook
+				.create(newPerson)
+				.then((addedPerson) => {
+					this.setState({
+						persons: this.state.persons.concat(addedPerson),
+						newName: "",
+						newNumber:""
+					})
+				})
+			}
+		}
 
-class App extends React.Component {
-	constructor(props) {
-		super(props)
-		console.log("constructor");
-		this.state = {
-			countries: [],
-			filter: ''
+		removePerson = (id) => (event) => {
+			if(!window.confirm(`Poistetaanko ${this.state.persons.find(person => person.id === id).name} ?`))
+			return
+			phonebook
+			.remove(id)
+			.then(() => {
+				this.setState({
+					persons: this.state.persons.filter(person => person.id !== id)
+				})
+			})
+		}
+		
+		render() {
+			return (
+				<div>
+				<h2>Puhelinluettelo</h2>
+				<div>
+				rajaa näytettäviä <input value={this.state.filter} onChange={this.handleFilterInputChange}/>
+				</div>
+				<AddPersonForm state={this.state}
+				addPerson={this.addPerson}
+				handleNameInputChange={this.handleNameInputChange}
+				handleNumberInputChange={this.handleNumberInputChange}/>
+				<h2>Numerot</h2>
+				<table><tbody>
+				<PersonToTable persons={this.state.persons} filter={this.state.filter} removePerson={this.removePerson}/>
+				</tbody></table>
+				</div>
+			)
 		}
 	}
 	
-	componentDidMount(){
-		axios
-		.get("https://restcountries.eu/rest/v2/all")
-		.then((response) =>{
-			console.log("response");
-			this.setState({countries: response.data})
-		})
-	}
-	handleFilterInputChange = (event) => {
-		this.setState({filter: event.target.value})
-	}
-
-	setFilter = (newFilter) =>() => this.setState({filter: newFilter})
-
-	render() {
-		return (
-			<div>
-			<h2>Country information</h2>
-			<div>
-			find countries <input value={this.state.filter} onChange={this.handleFilterInputChange}/>
-			</div>
-			<ShowFilteredCountries countries={this.state.countries} filter={this.state.filter} setFilter={this.setFilter}/>
-			</div>
-		)
-	}
-}
-
-export default App
+	export default App
