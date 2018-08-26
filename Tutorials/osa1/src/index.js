@@ -1,0 +1,76 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+
+/* Funktio joka palauttaa funktion, currying
+
+asetaArvoon = (arvo) => () => this.setState({ counter: arvo })
+
+*/
+
+
+const Display = ({ counter }) => <div>{counter}</div>
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      hyvä: 0,
+      huono: 0,
+      neutraali: 0
+    }
+  }
+
+  klikVasen = () => {
+    this.setState({
+      vasen: this.state.vasen + 1,
+      kaikki: this.state.kaikki.concat('v')
+    })
+  }
+
+  klikOikea = () => {
+    this.setState({
+      oikea: this.state.oikea + 1,
+      kaikki: this.state.kaikki.concat('o')
+    })
+  }
+
+  render() {
+    const historia = () => {
+      if (this.state.kaikki.length === 0) {
+        return (
+          <div>
+            <em>sovellusta käytetään nappeja painelemalla</em>
+          </div>
+        )
+      }
+      return (
+        <div>
+          näppäilyhistoria: {this.state.kaikki.join(' ')}
+        </div>
+      )
+    }
+    return (
+      <div>
+        <div>
+          {this.state.vasen}
+          <button onClick={this.klikVasen}>vasen</button>
+          <button onClick={this.klikOikea}>oikea</button>
+          {this.state.oikea}
+          <div>{historia()}</div>
+        </div>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+)
